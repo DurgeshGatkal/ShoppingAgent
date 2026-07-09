@@ -38,7 +38,7 @@ def chat():
             )
 
             # Print AI response
-            print("\nAI :", response.text)
+            print(f"\n🤖 BuySense AI: {response.text}")
 
     except ValueError as error:
         print(f"\nConfiguration Error: {error}")
