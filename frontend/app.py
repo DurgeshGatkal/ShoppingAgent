@@ -8,6 +8,15 @@ Gemini integration will be added in the next step.
 
 import streamlit as st
 
+import sys
+from pathlib import Path
+
+# Add backend folder to Python path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from backend.config import get_gemini_client
+from backend.prompts import SHOPPING_SYSTEM_PROMPT
+
 # -----------------------------
 # Page Configuration
 # -----------------------------
@@ -63,7 +72,31 @@ if user_prompt:
         st.markdown(user_prompt)
 
     # Placeholder AI response
-    ai_response = "🤖 This will later come from Gemini."
+    from backend.config import get_gemini_client
+    from backend.prompts import SHOPPING_SYSTEM_PROMPT
+
+   # Create Gemini client
+    client = get_gemini_client()
+
+    # Combine system prompt and user question
+    full_prompt = f"""
+    {SHOPPING_SYSTEM_PROMPT}
+
+    User Question:
+    {user_prompt}
+    """
+
+# Generate response safely
+    try:
+     response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=full_prompt
+    )
+
+     ai_response = response.text
+
+    except Exception as e:
+     ai_response = f"❌ Error: {e}"
 
     # Store AI response
     st.session_state.messages.append(

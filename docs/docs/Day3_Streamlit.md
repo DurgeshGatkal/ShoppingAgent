@@ -1,4 +1,5 @@
-Today's task is create a UI using Streamlit.
+Today's task is create a  Basic UI using Streamlit. 
+
 
 What is Streamlit?
 Streamlit is a Python framework used to create web applications quickly without writing HTML, CSS, or JavaScript.
@@ -41,4 +42,16 @@ Response
 
 Streamlit
 
+
+# some Important terms(concepts) we use :
+| Concept              | Purpose                                |
+| ---------------------| -------------------------------------- |
+| st.set_page_config() | Sets page title, icon, and layout      |
+| st.title()           | Displays the main heading              |
+| st.subheader()       | Displays a subtitle                    |
+| st.chat_input()      | Creates a chat input box               |
+| st.chat_message()    | Displays messages in chat bubbles      |
+| st.session_state     | Stores chat history during the session |
+
+# We are just creating a Basic UI application do that that the AI response will occur on UI instead of showing results on VS terminal.
 
