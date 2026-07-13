@@ -21,21 +21,72 @@ from backend.chatbot import generate_response
 st.set_page_config(
     page_title="BuySense AI",
     page_icon="🛍️",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
+
+# ===========================
+# Sidebar
+# ===========================
+
+with st.sidebar:
+
+    st.title("🛍️ BuySense AI")
+
+    st.markdown("---")
+
+    if st.button("➕ New Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
+
+    st.markdown("---")
+
+    st.subheader("📂 Recent Chats")
+
+    st.caption("Laptop under ₹60,000")
+    st.caption("Best Gaming Phone")
+    st.caption("Wireless Earbuds")
+
+    st.markdown("---")
+
+    st.subheader("⚙ Settings")
+
+    st.write("Version : 1.0")
+
+
 
 # -----------------------------
 # Title and Subtitle
 # -----------------------------
 st.title("🛍️ BuySense AI")
-st.subheader("AI Shopping Decision Assistant")
 
-st.write(
-    "Welcome! I can help you compare products, recommend the best options, "
-    "and make smarter shopping decisions."
+st.caption("AI Shopping Decision Assistant")
+
+st.markdown(
+    """
+### Find the Best Product with AI
+
+Compare products, analyze reviews,
+and make smarter shopping decisions.
+"""
 )
 
+
+st.subheader("💡 Try asking")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.info("💻 Best Laptop under ₹60,000")
+    st.info("🎧 Best Earbuds under ₹3,000")
+
+with col2:
+    st.info("📱 Compare iPhone vs Samsung")
+    st.info("⌚ Best Smartwatch under ₹5,000")
+
 st.divider()
+
+
 
 # -----------------------------
 # Initialize Chat History
@@ -53,7 +104,10 @@ for message in st.session_state.messages:
 # -----------------------------
 # Chat Input
 # -----------------------------
-user_prompt = st.chat_input("Ask me about any product...")
+user_prompt = st.chat_input(
+    "Ask about laptops, mobiles, TVs, headphones..."
+)
+
 
 if user_prompt:
 
@@ -71,8 +125,9 @@ if user_prompt:
 
     
 
-   # Get response from backend
-ai_response = generate_response(user_prompt)
+with st.spinner("🤖 BuySense AI is thinking..."):
+    ai_response = generate_response(user_prompt)
+
 
     # Store AI response
 st.session_state.messages.append(
@@ -85,3 +140,6 @@ st.session_state.messages.append(
     # Display AI response
 with st.chat_message("assistant"):
         st.markdown(ai_response)
+
+
+        
