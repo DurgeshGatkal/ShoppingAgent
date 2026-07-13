@@ -1,0 +1,120 @@
+What Each File Does
+1. frontend/app.py
+Purpose
+
+This file is responsible for everything the user sees.
+
+It contains:
+
+Streamlit UI
+Chat interface
+User input
+Chat history
+Displaying AI responses
+
+It does not communicate with Gemini directly.
+
+Instead, it calls the backend whenever the user sends a message.
+
+
+2. backend/chatbot.py
+Purpose
+
+This file contains the complete AI logic.
+
+Its responsibilities include:
+
+Receiving the user's question
+Combining it with the system prompt
+Sending the request to Gemini
+Returning the generated response
+
+Instead of printing the response, it returns the result to the frontend.
+
+Main function:
+
+generate_response(user_input)
+
+
+3. backend/config.py
+Purpose
+
+This file handles project configuration.
+
+Responsibilities:
+
+Load the Gemini API Key
+Read the .env file
+Create the Gemini client
+Return the configured client
+
+This ensures that API-related code is written only once.
+
+
+4. backend/prompts.py
+Purpose
+
+Stores the System Prompt.
+
+Instead of writing long prompts inside chatbot.py, we moved them to a dedicated file.
+
+Advantages:
+
+Easier to edit
+Easier to improve
+Cleaner backend code
+
+
+5. .env
+Purpose
+
+Stores secret information.
+
+Example:
+
+GEMINI_API_KEY=xxxxxxxxxxxxxxxx
+
+Never upload this file to GitHub.
+
+
+#Frontend-Backend Communication
+
+The flow of execution is:
+
+User
+
+↓
+
+Streamlit UI
+(frontend/app.py)
+
+↓
+
+generate_response()
+
+↓
+
+backend/chatbot.py
+
+↓
+
+config.py
+
+↓
+
+Gemini API
+
+↓
+
+AI Response
+
+↓
+
+frontend/app.py
+
+↓
+
+Displayed to User
+
+The frontend never directly talks to Gemini.
+

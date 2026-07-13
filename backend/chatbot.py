@@ -1,68 +1,44 @@
 """
 chatbot.py
 
-Main chatbot application.
+Contains the AI logic for BuySense AI.
+The frontend will call the generate_response() function.
 """
 
-from config import get_gemini_client
-from prompts import SHOPPING_SYSTEM_PROMPT
+from .config import get_gemini_client
+from .prompts import SHOPPING_SYSTEM_PROMPT
+
+# Create Gemini client only once
+client = get_gemini_client()
 
 
-def chat():
+def generate_response(user_input: str) -> str:
     """
-    Runs the chatbot continuously until the user types 'exit'.
+    Generates an AI response for the given user query.
+
+    Args:
+        user_input (str): User's shopping-related question.
+
+    Returns:
+        str: AI-generated response.
     """
+
+    full_prompt = f"""
+{SHOPPING_SYSTEM_PROMPT}
+
+User Question:
+{user_input}
+"""
 
     try:
-        # Initialize Gemini client
-        client = get_gemini_client()
 
-        print("=" * 50)
-        print("         BuySense AI")
-        print("  AI Shopping Decision Assistant")
-        print("=" * 50)
-        print("I can help you:")
-        print("✔ Compare Products")
-        print("✔ Recommend Alternatives")
-        print("✔ Explain Specifications")
-        print("✔ Make Better Buying Decisions")
-        print("\nType 'exit' anytime to quit.")
-        print("=" * 50)
-        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=full_prompt
+        )
 
-        while True:
+        return response.text
 
-            # Take input from user
-            user_input = input("\nYou : ")
+    except Exception as e:
 
-            # Exit condition
-            if user_input.lower() == "exit":
-                print("\nGoodbye! 👋")
-                break
-
-            # Combine the system prompt with the user's question
-            full_prompt = f"""
-             {SHOPPING_SYSTEM_PROMPT}
-
-             User Question:
-             {user_input}
-             """
-
-             # Generate response from Gemini
-            response = client.models.generate_content(
-             model="gemini-2.5-flash",
-             contents=full_prompt
-             )
-
-            # Print AI response
-            print(f"\n🤖 BuySense AI: {response.text}")
-
-    except ValueError as error:
-        print(f"\nConfiguration Error: {error}")
-
-    except Exception as error:
-        print(f"\nSomething went wrong: {error}")
-
-
-if __name__ == "__main__":
-    chat()
+        return f"❌ Error: {e}"
