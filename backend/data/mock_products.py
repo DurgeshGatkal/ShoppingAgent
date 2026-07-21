@@ -1,11 +1,8 @@
 """
 Mock Product Database
 
-Currently we are using sample data.
-
-Later this file will be replaced with
-real product information from APIs or
-other data sources.
+Currently we are using sample product data.
+Later this file will be replaced by real APIs or web scraping.
 """
 
 PRODUCTS = [
@@ -13,73 +10,186 @@ PRODUCTS = [
     {
         "id": 1,
         "name": "Apple iPhone 16",
+        "brand": "Apple",
         "platform": "Amazon",
         "price": 74999,
-        "rating": 4.6,
-        "brand": "Apple",
+        "rating": 4.7,
+        "reviews": 15234,
         "category": "Mobile",
         "image": "https://via.placeholder.com/200",
-        "url": "https://amazon.in"
+        "storage": "128 GB",
+        "ram": "8 GB",
+        "display": "6.1-inch Super Retina XDR OLED",
+        "processor": "Apple A18",
+        "camera": "48 MP + 12 MP",
+        "battery": "3561 mAh",
+        "color": "Black",
+        "delivery": "Tomorrow",
+        "offers": "10% Instant Bank Discount",
+        "description": "Latest Apple smartphone powered by the A18 chip with advanced camera features.",
+        "url": "https://www.amazon.in"
     },
 
     {
         "id": 2,
         "name": "Apple iPhone 16",
+        "brand": "Apple",
         "platform": "Flipkart",
         "price": 73999,
-        "rating": 4.5,
-        "brand": "Apple",
+        "rating": 4.6,
+        "reviews": 13890,
         "category": "Mobile",
         "image": "https://via.placeholder.com/200",
-        "url": "https://flipkart.com"
+        "storage": "128 GB",
+        "ram": "8 GB",
+        "display": "6.1-inch Super Retina XDR OLED",
+        "processor": "Apple A18",
+        "camera": "48 MP + 12 MP",
+        "battery": "3561 mAh",
+        "color": "Blue",
+        "delivery": "2 Days",
+        "offers": "₹3000 Exchange Bonus",
+        "description": "Apple iPhone 16 with premium design and excellent performance.",
+        "url": "https://www.flipkart.com"
     },
 
     {
         "id": 3,
         "name": "Samsung Galaxy S25",
-        "platform": "Amazon",
-        "price": 68999,
-        "rating": 4.4,
         "brand": "Samsung",
+        "platform": "Amazon",
+        "price": 81999,
+        "rating": 4.8,
+        "reviews": 9845,
         "category": "Mobile",
         "image": "https://via.placeholder.com/200",
-        "url": "https://amazon.in"
+        "storage": "256 GB",
+        "ram": "12 GB",
+        "display": "6.2-inch Dynamic AMOLED",
+        "processor": "Snapdragon 8 Elite",
+        "camera": "50 MP + 12 MP + 10 MP",
+        "battery": "4000 mAh",
+        "color": "Silver",
+        "delivery": "Tomorrow",
+        "offers": "Free Galaxy Buds",
+        "description": "Samsung flagship smartphone with AI-powered camera and premium display.",
+        "url": "https://www.amazon.in"
     },
 
     {
         "id": 4,
-        "name": "Lenovo LOQ Gaming Laptop",
+        "name": "Samsung Galaxy S25",
+        "brand": "Samsung",
         "platform": "Flipkart",
-        "price": 69999,
+        "price": 80999,
         "rating": 4.7,
-        "brand": "Lenovo",
-        "category": "Laptop",
+        "reviews": 8742,
+        "category": "Mobile",
         "image": "https://via.placeholder.com/200",
-        "url": "https://flipkart.com"
+        "storage": "256 GB",
+        "ram": "12 GB",
+        "display": "6.2-inch Dynamic AMOLED",
+        "processor": "Snapdragon 8 Elite",
+        "camera": "50 MP + 12 MP + 10 MP",
+        "battery": "4000 mAh",
+        "color": "Black",
+        "delivery": "2 Days",
+        "offers": "₹5000 Exchange Offer",
+        "description": "Premium Samsung flagship with smooth performance and long battery life.",
+        "url": "https://www.flipkart.com"
     },
 
     {
         "id": 5,
-        "name": "HP Victus Gaming Laptop",
+        "name": "OnePlus 13",
+        "brand": "OnePlus",
         "platform": "Amazon",
-        "price": 67999,
-        "rating": 4.5,
-        "brand": "HP",
-        "category": "Laptop",
+        "price": 69999,
+        "rating": 4.6,
+        "reviews": 6321,
+        "category": "Mobile",
         "image": "https://via.placeholder.com/200",
-        "url": "https://amazon.in"
+        "storage": "256 GB",
+        "ram": "12 GB",
+        "display": "6.82-inch AMOLED",
+        "processor": "Snapdragon 8 Elite",
+        "camera": "50 MP Triple Camera",
+        "battery": "6000 mAh",
+        "color": "Emerald Green",
+        "delivery": "Tomorrow",
+        "offers": "No Cost EMI",
+        "description": "Powerful flagship phone with ultra-fast charging and premium design.",
+        "url": "https://www.amazon.in"
     },
 
     {
         "id": 6,
-        "name": "Boat Airdopes 311 Pro",
-        "platform": "Meesho",
-        "price": 1499,
-        "rating": 4.2,
-        "brand": "Boat",
-        "category": "Earbuds",
+        "name": "Nothing Phone 3",
+        "brand": "Nothing",
+        "platform": "Flipkart",
+        "price": 54999,
+        "rating": 4.5,
+        "reviews": 4512,
+        "category": "Mobile",
         "image": "https://via.placeholder.com/200",
-        "url": "https://meesho.com"
+        "storage": "256 GB",
+        "ram": "12 GB",
+        "display": "6.7-inch AMOLED",
+        "processor": "Snapdragon 8s Gen 4",
+        "camera": "50 MP Dual Camera",
+        "battery": "5000 mAh",
+        "color": "White",
+        "delivery": "Tomorrow",
+        "offers": "5% Cashback",
+        "description": "Unique transparent design with clean Android experience.",
+        "url": "https://www.flipkart.com"
+    },
+
+    {
+        "id": 7,
+        "name": "Apple AirPods Pro 2",
+        "brand": "Apple",
+        "platform": "Amazon",
+        "price": 22999,
+        "rating": 4.8,
+        "reviews": 19234,
+        "category": "Accessories",
+        "image": "https://via.placeholder.com/200",
+        "storage": "-",
+        "ram": "-",
+        "display": "-",
+        "processor": "Apple H2 Chip",
+        "camera": "-",
+        "battery": "30 Hours",
+        "color": "White",
+        "delivery": "Tomorrow",
+        "offers": "₹1000 Coupon",
+        "description": "Premium wireless earbuds with Active Noise Cancellation.",
+        "url": "https://www.amazon.in"
+    },
+
+    {
+        "id": 8,
+        "name": "Apple AirPods Pro 2",
+        "brand": "Apple",
+        "platform": "Flipkart",
+        "price": 22499,
+        "rating": 4.7,
+        "reviews": 17001,
+        "category": "Accessories",
+        "image": "https://via.placeholder.com/200",
+        "storage": "-",
+        "ram": "-",
+        "display": "-",
+        "processor": "Apple H2 Chip",
+        "camera": "-",
+        "battery": "30 Hours",
+        "color": "White",
+        "delivery": "2 Days",
+        "offers": "Bank Cashback",
+        "description": "Industry-leading ANC with spatial audio experience.",
+        "url": "https://www.flipkart.com"
     }
 
 ]
+

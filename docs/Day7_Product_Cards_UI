@@ -1,0 +1,136 @@
+
+## Day 7 - Product Cards UI
+
+### Objective
+Transform raw search results into interactive product cards that resemble a modern e-commerce application.
+
+### Why?
+Printing dictionaries is useful for testing, but users need a visual interface. Product cards make the application intuitive and prepare it for AI-powered comparisons.
+
+### Features Added
+- Product cards
+- Product image
+- Product price
+- Product rating
+- Platform name
+- View Details button
+- Product detail page structure
+
+### Architecture
+
+User
+
+↓
+
+Search
+
+↓
+
+Search Module
+
+↓
+
+Product Cards
+
+↓
+
+User Click
+
+↓
+
+Product Details
+
+↓
+
+Gemini AI (next phase)
+
+### Files Created
+
+frontend/components/product_card.py
+
+frontend/components/product_details.py
+
+### Expected Outcome
+
+Users can search for a product, view all matching products as cards, and open a detailed view for any product.
+
+### Next Day
+
+Gemini AI Integration:
+- Pros & Cons
+- Review Summary
+- Recommendation
+- Best Deal
+
+### Development Plan
+✅ Expand the product database with richer fields.
+✅ Build the Product Card component.
+✅ Display all search results as cards.
+✅ Add the "View Details" interaction.
+✅ Build the Product Details component.
+✅ Reserve a section for AI recommendations.
+
+## Instead of using Streamlit's default components, we'll use:
+st.columns() for product grids.
+st.container(border=True) for clean product cards.
+Custom CSS (style.css) to give the app a modern look.
+Session state to manage search results and the selected product.
+
+This will make the app look much closer to a real shopping website while still keeping development fast for your one-week deadline.
+
+## Step 1:
+STEP 1
+Clean the Project
+
+Currently
+
+frontend/
+
+app.py
+
+contains chatbot code.
+
+We are going to replace it completely.
+
+Reason:
+
+A chatbot architecture is very different from a shopping application.
+
+Starting clean now is faster than trying to modify the old file.
+
+## Step 2 – Product Card Component
+
+### Objective
+Create a reusable UI component to display products consistently.
+
+### Why?
+A reusable component avoids duplicate code and makes the UI easier to maintain.
+
+### Files Modified
+- frontend/components/product_card.py
+- frontend/app.py
+
+### Result
+Products are displayed as cards instead of plain text.
+
+
+
+## Step 3 – Product Details Component
+
+### Objective
+Display complete information about the selected product when the user clicks **View Details**.
+
+### Files Created
+- `frontend/components/product_details.py`
+
+### Files Modified
+- `frontend/app.py`
+
+### How It Works
+1. User clicks **View Details**.
+2. The selected product is stored in `st.session_state`.
+3. `show_product_details()` reads the stored product.
+4. A detailed product page is displayed with specifications, offers, and a placeholder for AI recommendations.
+
+### Why Session State?
+It preserves the selected product across Streamlit reruns, allowing the UI to remember what the user clicked.
