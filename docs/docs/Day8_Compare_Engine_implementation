@@ -1,0 +1,48 @@
+
+## AI Compare Algorithm:
+
+Search Product
+        │
+        ▼
+Collect Results
+        │
+        ▼
+Normalize Product Data
+        │
+        ▼
+Extract Features
+        │
+        ▼
+Score Every Product
+        │
+        ▼
+Rank Products
+        │
+        ▼
+Generate AI Explanation
+        │
+        ▼
+Display Recommendation
+
+
+
+
+
+
+Day 8
+│
+├── Step 1 : Product Normalization
+├── Step 2 : Feature Extraction
+├── Step 3 : Scoring Algorithm
+├── Step 4 : Ranking
+├── Step 5 : AI Explanation (Gemini)
+└── Step 6 : Display Recommendation
+
+
+## creating files for the algorithm:
+
+normalizer.py → Standardizes product names.
+features.py → Selects the important attributes for comparison.
+scoring.py → Implements your comparison algorithm.
+ranker.py → Combines everything and ranks products.
+

@@ -1,7 +1,16 @@
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+
 import streamlit as st
-from frontend.components.product_card import show_product_card
+from components.product_card import show_product_card
 from backend.services.search import search_products
-from frontend.components.product_details import show_product_details
+from components.product_details import show_product_details
+from backend.ai.recommendation_engine import generate_recommendation
+
 
 # -----------------------------
 # PAGE CONFIGURATION
@@ -12,6 +21,7 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # -----------------------------
 # SESSION STATE
 # -----------------------------
@@ -20,6 +30,10 @@ if "products" not in st.session_state:
 
 if "selected_product" not in st.session_state:
     st.session_state.selected_product = None
+
+if "ai_recommendation" not in st.session_state:
+    st.session_state.ai_recommendation = ""
+
 
 # -----------------------------
 # CUSTOM CSS
@@ -177,9 +191,19 @@ st.markdown(
 # SEARCH RESULTS
 # -----------------------------
 
+from backend.ai.recommendation_engine import generate_recommendation
+
 if search_clicked:
 
-    st.session_state.products = search_products(search_query)
+    products = search_products(search_query)
+
+    result = generate_recommendation(products)
+
+    st.session_state.products = result["ranked_products"]
+
+    st.session_state.ai_recommendation = result["recommendation"]
+
+
 
 # Display products if they exist
 if len(st.session_state.products) > 0:
@@ -207,6 +231,19 @@ if st.session_state.selected_product is not None:
 
     show_product_details(st.session_state.selected_product)
 
+# =====================================================
+# AI RECOMMENDATION
+# =====================================================
+
+if st.session_state.ai_recommendation:
+
+    st.divider()
+
+    st.subheader("🤖 BuySense AI Recommendation")
+
+    st.success(st.session_state.ai_recommendation)
+
+    
 
 # -----------------------------
 # FOOTER
