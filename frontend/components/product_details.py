@@ -69,12 +69,7 @@ def show_product_details(product):
 
     st.divider()
 
-    st.subheader("🤖 AI Recommendation")
-
-    st.info(
-        "Gemini AI recommendations will appear here in the next phase."
-    )
-
+    
     st.divider()
 
     st.link_button(

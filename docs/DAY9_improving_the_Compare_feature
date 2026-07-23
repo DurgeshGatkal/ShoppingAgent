@@ -1,0 +1,109 @@
+BuySense AI - Phase-wise Implementation:
+Phase 1 (Current Phase) - AI Recommendation Architecture
+
+Goal:
+Move from "compare 2 products" to compare every available platform.
+
+What changes?
+Create a proper AI module.
+Send the entire searched product list to Gemini.
+Gemini selects:
+   Best Overall
+   Best Budget
+   Best Rated
+   Final Recommendation
+
+After Phase 1 :
+User Search
+      ↓
+search_products()
+      ↓
+Returns ALL matching products
+      ↓
+Recommendation Engine
+      ↓
+Gemini compares ALL platforms
+      ↓
+Returns recommendation
+
+Components
+product_formatter.py
+
+Purpose:
+Converts product data into a clean, readable format for Gemini.
+
+Reason:
+Language models analyze structured text more effectively than raw Python objects.
+
+ranking.py
+
+Purpose:
+Sorts products before AI analysis.
+
+Current Ranking Criteria:
+
+Higher rating first.
+Lower price if ratings are equal.
+
+
+🎯 Phase 1B – Build the Recommendation Engine
+
+Phase 4 Goal
+
+When a user searches:
+
+Apple iPhone 16
+
+Your application should perform this flow:
+Search "iPhone 16"
+
+        │
+        ▼
+Search Database
+
+        │
+        ▼
+
+Amazon
+₹74,999
+⭐4.7
+Tomorrow
+
+Flipkart
+₹73,999
+⭐4.6
+2 Days
+
+Meesho
+₹75,499
+⭐4.5
+Tomorrow
+
+        │
+        ▼
+
+Our Algorithm
+(Product Score)
+
+        │
+        ▼
+
+Sorted Products
+
+        │
+        ▼
+
+Gemini
+
+Compare ALL platforms
+
+        │
+        ▼
+
+Return JSON
+
+        │
+        ▼
+
+Frontend Cards
+

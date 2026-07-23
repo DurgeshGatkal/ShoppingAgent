@@ -241,7 +241,39 @@ if st.session_state.ai_recommendation:
 
     st.subheader("🤖 BuySense AI Recommendation")
 
-    st.success(st.session_state.ai_recommendation)
+    rec = st.session_state.ai_recommendation
+
+    # Check that Gemini returned a dictionary
+    if isinstance(rec, dict):
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.success("🏆 Best Overall")
+
+            st.write(rec["best_overall"]["product"])
+            st.caption(rec["best_overall"]["reason"])
+
+        with col2:
+            st.info("💰 Best Budget")
+
+            st.write(rec["best_budget"]["product"])
+            st.caption(rec["best_budget"]["reason"])
+
+        with col3:
+            st.warning("⭐ Best Rated")
+
+            st.write(rec["best_rated"]["product"])
+            st.caption(rec["best_rated"]["reason"])
+
+        st.markdown("### ✅ Final Recommendation")
+
+        st.success(rec["final_recommendation"])
+
+    else:
+        st.error("Gemini did not return a valid recommendation.")
+        st.write(rec)
+
 
     
 

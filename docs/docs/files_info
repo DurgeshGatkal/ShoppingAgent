@@ -118,3 +118,44 @@ Displayed to User
 
 The frontend never directly talks to Gemini.
 
+### WorkFlow of the Agent :
+
+User searches:
+iPhone 16
+
+        ↓
+
+Search Module
+
+        ↓
+
+Returns every matching product
+
+Amazon
+Flipkart
+Meesho
+Croma
+Reliance Digital
+...
+
+        ↓
+
+AI Compare Module
+
+        ↓
+
+Gemini analyzes ALL products together
+
+Factors:
+✓ Price
+✓ Rating
+✓ Delivery
+✓ Warranty
+✓ Offers
+✓ Seller reliability (later)
+✓ AI Score (later)
+
+        ↓
+
+Chooses ONE best product
+

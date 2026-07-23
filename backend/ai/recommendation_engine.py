@@ -1,70 +1,93 @@
-from backend.ai.ranker import rank_products
-from backend.config import get_gemini_client
-from backend.prompts import SHOPPING_SYSTEM_PROMPT
+"""
+recommendation_engine.py
 
+Ranks products first.
+Then asks Gemini to compare ALL platforms.
+"""
+
+from backend.chatbot import generate_response
+
+
+# ----------------------------------
+# Product Scoring Algorithm
+# ----------------------------------
+
+def calculate_score(product):
+
+    score = 0
+
+    # Higher rating = higher score
+    score += product["rating"] * 15
+
+    # Lower price = better
+    score += max(0, 100000 - product["price"]) / 3000
+
+    # Delivery
+
+    if product["delivery"].lower() == "tomorrow":
+        score += 10
+
+    elif "2" in product["delivery"]:
+        score += 5
+
+    # Reviews
+
+    score += min(product["reviews"] / 5000, 5)
+
+    return round(score, 2)
+
+
+# ----------------------------------
+# Recommendation
+# ----------------------------------
 
 def generate_recommendation(products):
-    """
-    Generates an AI recommendation for a list of products.
 
-    Steps:
-    1. Rank the products using our algorithm.
-    2. Send the ranked products to Gemini.
-    3. Return both the ranked products and AI response.
-    """
+    if len(products) == 0:
 
-    # -------------------------
-    # Rank products
-    # -------------------------
-    ranked_products = rank_products(products)
+        return {
+            "ranked_products": [],
+            "recommendation": None
+        }
 
-    # -------------------------
-    # Build Prompt
-    # -------------------------
-    comparison_data = ""
+    # Score every product
 
-    for index, product in enumerate(ranked_products, start=1):
+    for product in products:
 
-        comparison_data += f"""
-Product {index}
+        product["score"] = calculate_score(product)
 
-Name: {product['name']}
-Platform: {product['platform']}
-Price: ₹{product['price']}
-Rating: {product['rating']}
-AI Score: {product['score']}
+    # Highest score first
 
-"""
-
-    prompt = f"""
-{SHOPPING_SYSTEM_PROMPT}
-
-Below are the ranked shopping results.
-
-{comparison_data}
-
-Generate:
-
-1. Best Overall Product
-2. Best Budget Product
-3. Pros and Cons of each product
-4. Which product should the customer buy?
-5. Explain your reasoning.
-"""
-
-    # -------------------------
-    # Call Gemini
-    # -------------------------
-    client = get_gemini_client()
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
+    ranked_products = sorted(
+        products,
+        key=lambda x: x["score"],
+        reverse=True
     )
+
+    # -----------------------------
+    # Create prompt for Gemini
+    # -----------------------------
+
+    prompt = ""
+
+    for product in ranked_products:
+
+        prompt += f"""
+Platform : {product['platform']}
+Product : {product['name']}
+Price : ₹{product['price']}
+Rating : {product['rating']}
+Reviews : {product['reviews']}
+Delivery : {product['delivery']}
+Score : {product['score']}
+
+"""
+
+    recommendation = generate_response(prompt)
 
     return {
         "ranked_products": ranked_products,
-        "recommendation": response.text
+        "recommendation": recommendation
     }
 
     

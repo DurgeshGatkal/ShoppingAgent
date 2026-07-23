@@ -1,32 +1,25 @@
 """
 chatbot.py
 
-Contains the AI logic for BuySense AI.
-The frontend will call the generate_response() function.
+Handles communication with Gemini.
+Returns JSON instead of plain text.
 """
+
+import json
 
 from .config import get_gemini_client
 from .prompts import SHOPPING_SYSTEM_PROMPT
 
-# Create Gemini client only once
 client = get_gemini_client()
 
 
-def generate_response(user_input: str) -> str:
-    """
-    Generates an AI response for the given user query.
+def generate_response(user_input: str):
 
-    Args:
-        user_input (str): User's shopping-related question.
-
-    Returns:
-        str: AI-generated response.
-    """
-
-    full_prompt = f"""
+    prompt = f"""
 {SHOPPING_SYSTEM_PROMPT}
 
-User Question:
+Products:
+
 {user_input}
 """
 
@@ -34,11 +27,41 @@ User Question:
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=full_prompt
+            contents=prompt
         )
 
-        return response.text
+        text = response.text.strip()
+
+        # Remove markdown if Gemini adds it
+        text = text.replace("```json", "")
+        text = text.replace("```", "")
+        text = text.strip()
+
+        # Convert JSON string -> Python Dictionary
+        return json.loads(text)
 
     except Exception as e:
 
-        return f"❌ Error: {e}"
+        return {
+            "best_overall": {
+                "platform": "",
+                "product": "",
+                "reason": f"Gemini Error: {e}"
+            },
+
+            "best_budget": {
+                "platform": "",
+                "product": "",
+                "reason": ""
+            },
+
+            "best_rated": {
+                "platform": "",
+                "product": "",
+                "reason": ""
+            },
+
+            "final_recommendation": "Unable to generate recommendation."
+        }
+
+        
