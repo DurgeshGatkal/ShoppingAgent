@@ -1,34 +1,55 @@
 """
 config.py
 
-This file is responsible for:
-1. Loading environment variables.
-2. Creating the Gemini client.
-3. Returning the client to other files.
+Manages application settings and environment variables using Pydantic Settings.
+Configures and initializes the Google Gemini API client.
 """
 
+import os
+from typing import Optional
 from dotenv import load_dotenv
 from google import genai
-import os
+from pydantic_settings import BaseSettings
 
 
-# Load variables from .env file
+# Load environment variables from .env file
 load_dotenv()
 
 
-def get_gemini_client():
+class Settings(BaseSettings):
+    """Application settings schema validating environment variables."""
+    app_name: str = "BuySense AI"
+    environment: str = "development"
+    debug: bool = True
+    api_port: int = 8000
+    gemini_api_key: Optional[str] = None
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        extra = "ignore"
+
+
+def get_settings() -> Settings:
+    """Returns validated application settings instance."""
+    return Settings(
+        gemini_api_key=os.getenv("GEMINI_API_KEY")
+    )
+
+
+def get_gemini_client() -> genai.Client:
     """
-    Creates and returns a Gemini client.
+    Creates and returns a Gemini client instance.
 
     Returns:
         genai.Client: Configured Gemini client
     """
+    settings = get_settings()
+    api_key = settings.gemini_api_key or os.getenv("GEMINI_API_KEY")
 
-    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key or api_key == "your_gemini_api_key_here":
+        raise ValueError(
+            "GEMINI_API_KEY not set. Please copy .env.example to .env and set a valid GEMINI_API_KEY."
+        )
 
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY not found in .env file.")
-
-    client = genai.Client(api_key=api_key)
-
-    return client
+    return genai.Client(api_key=api_key)
