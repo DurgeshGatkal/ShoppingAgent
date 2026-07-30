@@ -6,14 +6,24 @@ Configures and initializes the Google Gemini API client.
 """
 
 import os
+from pathlib import Path
 from typing import Optional
 from dotenv import load_dotenv
 from google import genai
 from pydantic_settings import BaseSettings
 
 
-# Load environment variables from .env file
-load_dotenv()
+# Resolve project root and backend directory paths
+BASE_DIR = Path(__file__).resolve().parent.parent
+BACKEND_DIR = Path(__file__).resolve().parent
+
+# Load environment variables from root .env or backend/.env
+if (BASE_DIR / ".env").exists():
+    load_dotenv(BASE_DIR / ".env")
+elif (BACKEND_DIR / ".env").exists():
+    load_dotenv(BACKEND_DIR / ".env")
+else:
+    load_dotenv()
 
 
 class Settings(BaseSettings):

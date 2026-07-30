@@ -1,93 +1,42 @@
 """
 recommendation_engine.py
 
-Ranks products first.
-Then asks Gemini to compare ALL platforms.
+Main recommendation pipeline orchestrating unified 0-100 product scoring and Gemini AI structured recommendation generation.
 """
 
-from backend.chatbot import generate_response
+from typing import List, Dict, Any
+from backend.services.scoring_service import score_and_rank_products
+from backend.services.ai_service import generate_ai_recommendation
 
 
-# ----------------------------------
-# Product Scoring Algorithm
-# ----------------------------------
+def generate_recommendation(products: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Ranks products using relative scoring service and generates structured Gemini recommendation.
 
-def calculate_score(product):
+    Args:
+        products (List[Dict]): List of product dictionaries.
 
-    score = 0
-
-    # Higher rating = higher score
-    score += product["rating"] * 15
-
-    # Lower price = better
-    score += max(0, 100000 - product["price"]) / 3000
-
-    # Delivery
-
-    if product["delivery"].lower() == "tomorrow":
-        score += 10
-
-    elif "2" in product["delivery"]:
-        score += 5
-
-    # Reviews
-
-    score += min(product["reviews"] / 5000, 5)
-
-    return round(score, 2)
-
-
-# ----------------------------------
-# Recommendation
-# ----------------------------------
-
-def generate_recommendation(products):
-
-    if len(products) == 0:
-
+    Returns:
+        Dict: Contains 'ranked_products' (list) and 'recommendation' (dict).
+    """
+    if not products:
         return {
             "ranked_products": [],
-            "recommendation": None
+            "recommendation": {
+                "best_overall": {"platform": "", "product": "", "reason": "No matching products found."},
+                "best_budget": {"platform": "", "product": "", "reason": ""},
+                "best_rated": {"platform": "", "product": "", "reason": ""},
+                "final_recommendation": "Search for products to receive AI recommendations."
+            }
         }
 
-    # Score every product
+    # 1. Score and rank products (0-100 normalized scale)
+    ranked_products = score_and_rank_products(products)
 
-    for product in products:
-
-        product["score"] = calculate_score(product)
-
-    # Highest score first
-
-    ranked_products = sorted(
-        products,
-        key=lambda x: x["score"],
-        reverse=True
-    )
-
-    # -----------------------------
-    # Create prompt for Gemini
-    # -----------------------------
-
-    prompt = ""
-
-    for product in ranked_products:
-
-        prompt += f"""
-Platform : {product['platform']}
-Product : {product['name']}
-Price : ₹{product['price']}
-Rating : {product['rating']}
-Reviews : {product['reviews']}
-Delivery : {product['delivery']}
-Score : {product['score']}
-
-"""
-
-    recommendation = generate_response(prompt)
+    # 2. Pass ranked products with hardware specs to Gemini AI
+    recommendation = generate_ai_recommendation(ranked_products)
 
     return {
         "ranked_products": ranked_products,
         "recommendation": recommendation
     }
-
-    
