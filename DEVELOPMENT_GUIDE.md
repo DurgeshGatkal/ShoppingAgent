@@ -4,6 +4,36 @@ This document is your living tracker for the entire BuySense AI rebuild. It deta
 
 ---
 
+## 🚨 IMPORTANT SECURITY FIX (API Key & Git Push Issues)
+
+### Why GitHub Blocked Your Push:
+GitHub has automated secret scanners. A real Google Gemini API Key was accidentally pasted into `.env.example`. Since `.env.example` is tracked by Git, GitHub detected the secret key and blocked your push to protect your account.
+
+### How We Fixed It:
+1. **Cleaned `.env.example`**: Replaced the real key with the dummy placeholder `GEMINI_API_KEY=your_gemini_api_key_here`.
+2. **Updated `.gitignore`**: Ensured `.env`, `*.env`, `database/*.db`, and cache folders are strictly ignored so secrets and binary database files never get pushed to GitHub.
+
+### 👤 Action Required by You:
+1. **Revoke the Leaked API Key**: Go to [Google AI Studio API Keys](https://aistudio.google.com/app/apikey), delete the key that was exposed, and click **Create API Key** to get a fresh new key.
+2. **Put Key ONLY in `.env`**:
+   - `.env` (Ignored by Git, stays on your computer only):
+     ```env
+     GEMINI_API_KEY=your_new_actual_gemini_api_key_here
+     ```
+   - `.env.example` (Tracked by Git for public GitHub):
+     ```env
+     GEMINI_API_KEY=your_gemini_api_key_here
+     ```
+3. **Commit & Push to GitHub**:
+   Run the following commands in your terminal:
+   ```bash
+   git add .env.example .gitignore DEVELOPMENT_GUIDE.md backend/ database/
+   git commit -m "Fix secret key leak in env.example and complete Phase 2 DB setup"
+   git push origin main
+   ```
+
+---
+
 ## 📌 Phase 1: Environment & Dependency Setup (COMPLETED ✅)
 
 ### 🛠️ Changes Completed by AI:
@@ -12,57 +42,28 @@ This document is your living tracker for the entire BuySense AI rebuild. It deta
 3. **Upgraded `backend/config.py`**: Integrated Pydantic `BaseSettings` for robust environment variable validation and safe Gemini client initialization.
 4. **Cleaned Up Dead Code**: Permanently removed unused duplicate files `backend/ai/ranker.py` and `backend/ai/ranking.py`.
 
-### 👤 Action Items for You (Durgesh):
-- [ ] **Step 1**: In the project root directory (`c:\Users\Durgesh\Desktop\shopping agent`), create a new file named `.env` by copying `.env.example`.
-- [ ] **Step 2**: Open your `.env` file and set your Gemini API key:
-  ```env
-  GEMINI_API_KEY=your_actual_gemini_api_key_here
-  ```
-  *(If you don't have a key, get a free one at [Google AI Studio](https://aistudio.google.com/app/apikey))*
-- [ ] **Step 3**: (Optional) Open terminal and install updated dependencies:
-  ```bash
-  pip install -r requirements.txt
-  ```
+---
+
+## 📌 Phase 2: Database Layer & Data Models (COMPLETED ✅)
+
+### 🛠️ Changes Completed by AI:
+1. **Created `backend/database/connection.py`**: Configured SQLite database connection (`database/buysense.db`) using SQLAlchemy ORM engine.
+2. **Created `backend/database/models.py`**: Built relational database tables (`Platform`, `Product`, `Specification`).
+3. **Created `backend/schemas/product_schema.py`**: Built Pydantic models (`ProductCreate`, `ProductResponse`, `SpecificationSchema`) for API validation.
+4. **Created & Ran `backend/database/seed.py`**: Created SQLite database tables and seeded 8+ rich e-commerce products with hardware specifications.
+5. **Updated `backend/services/search.py`**: Replaced static list filtering with fast case-insensitive SQL queries (`Product.name.ilike()`, `Product.brand.ilike()`).
 
 ---
 
-## 📌 Phase 2: Database Layer & Data Models (NEXT UP ⏳)
+## 📌 Phase 3: Core AI & Scoring Engine (NEXT UP ⏳)
 
 ### 🎯 Objective:
-Replace mock data with a real **SQLite Database** and **SQLAlchemy ORM** models for products, specifications, and platforms.
+Build a unified, category-aware **Product Scoring Service** and update Gemini AI integration to pass hardware specifications and enforce strict JSON output formatting.
 
 ### 🛠️ Planned Changes:
-1. Create `backend/database/models.py`: Define `Product`, `Specification`, and `Platform` database tables.
-2. Create `backend/database/connection.py`: Set up SQLite database engine and session manager.
-3. Create `backend/database/seed.py`: Seed script to populate 25+ real products with complete hardware specs.
-4. Create `backend/schemas/product_schema.py`: Pydantic data schemas for request/response validation.
-
-### 👤 Action Items for You:
-- None required yet! Review Phase 1 and approve proceeding to Phase 2.
+1. Create `backend/services/scoring_service.py`: Replace legacy formulas with normalized 0–100 weighted score.
+2. Create `backend/services/ai_service.py`: Pass complete hardware specs to Gemini and use native Gemini JSON mode (`response_schema`).
+3. Refactor `backend/ai/recommendation_engine.py`: Use new AI service and unified scoring.
 
 ---
-
-## 📌 Phase 3: Core AI & Scoring Engine (UPCOMING)
-- Consolidate scoring logic into `backend/services/scoring_service.py` (0-100 normalized score).
-- Send complete hardware specifications (RAM, Storage, Battery, Camera) to Gemini.
-- Enforce strict JSON Schema outputs using Gemini SDK native JSON mode.
-
----
-
-## 📌 Phase 4: FastAPI Backend API Server (UPCOMING)
-- Create `backend/main.py` REST API server.
-- Endpoints: `GET /api/v1/products/search`, `POST /api/v1/recommend`, `POST /api/v1/chat`.
-
----
-
-## 📌 Phase 5: Vector DB (ChromaDB) & RAG (UPCOMING)
-- Set up ChromaDB vector database for semantic search on specs & user reviews.
-
----
-
-## 📌 Phase 6: Streamlit Frontend & Chatbot UI (UPCOMING)
-- Connect Streamlit to FastAPI REST API.
-- Add multi-turn interactive AI Chatbot tab using `st.chat_message`.
-
----
-*Last Updated: Phase 1 Complete*
+*Last Updated: Git Security Fix & Phase 2 Complete*

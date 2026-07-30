@@ -1,6 +1,21 @@
+# Environment & Secret Files
+.env
+*.env
+!.env.example
+
+# Python Caches & Environments
 __pycache__/
 *.pyc
-.env
 .venv/
+env/
+venv/
 .vscode/
+.idea/
+
+# Database & Storage
+database/*.db
+*.db
 chroma_db/
+
+# Streamlit
+.streamlit/secrets.toml
