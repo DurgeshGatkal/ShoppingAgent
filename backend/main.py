@@ -17,6 +17,7 @@ from backend.services.search import search_products
 from backend.ai.recommendation_engine import generate_recommendation
 from backend.services.ai_service import generate_ai_recommendation
 from backend.config import get_gemini_client
+from backend.services.vector_service import semantic_search, index_products, get_indexed_count
 
 settings = get_settings()
 
@@ -54,6 +55,11 @@ class HealthResponse(BaseModel):
     status: str
     app_name: str
     environment: str
+
+
+class SemanticSearchRequest(BaseModel):
+    query: str = Field(..., description="Natural language query (e.g. 'gaming phone under 40k')")
+    top_k: int = Field(5, description="Max number of results to return")
 
 
 # --- API Endpoints ---
@@ -164,6 +170,54 @@ User Question: {payload.message}
             "user_message": payload.message,
             "reply": f"Shopping Assistant Note: Unable to reach Gemini AI ({e}). Please ensure your GEMINI_API_KEY is configured."
         }
+
+
+@app.post("/api/v1/products/semantic-search", tags=["Products"])
+def semantic_search_endpoint(payload: SemanticSearchRequest):
+    """
+    Semantic RAG search using Gemini embeddings and ChromaDB vector store.
+    Understands natural language intent like 'gaming phone under 40k'.
+    """
+    try:
+        if get_indexed_count() == 0:
+            raise HTTPException(
+                status_code=status.HTTP_424_FAILED_DEPENDENCY,
+                detail="Vector index is empty. Run: python -m backend.database.index_vectors"
+            )
+        results = semantic_search(query=payload.query, top_k=payload.top_k)
+        return {
+            "query": payload.query,
+            "count": len(results),
+            "results": results
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Semantic search error: {str(e)}"
+        )
+
+
+@app.post("/api/v1/vector/index", tags=["Vector DB"])
+def index_products_endpoint(db: Session = Depends(get_db)):
+    """
+    Triggers product embedding and ChromaDB vector indexing from SQLite database.
+    Run once after seeding the database, or after adding new products.
+    """
+    try:
+        products = search_products("", db=db)
+        count = index_products(products)
+        total = get_indexed_count()
+        return {
+            "message": f"Indexed {count} new products.",
+            "total_indexed": total
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Vector indexing failed: {str(e)}"
+        )
 
 
 if __name__ == "__main__":

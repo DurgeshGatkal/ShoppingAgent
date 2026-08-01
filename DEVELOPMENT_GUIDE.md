@@ -73,7 +73,27 @@ GitHub has automated secret scanners. A real Google Gemini API Key was accidenta
 
 ---
 
-## 💡 Recommended Features & Future Roadmap (Post-Phase 3)
+## 📌 Phase 5: Vector DB (ChromaDB) RAG & Semantic Search (COMPLETED ✅)
+
+### 🛠️ Changes Completed by AI:
+1. **Created `backend/services/vector_service.py`**:
+   - Initializes a persistent ChromaDB collection (`buysense_products`).
+   - Generates Gemini `text-embedding-004` embeddings for product names, brands, specs, and descriptions.
+   - Supports semantic cosine-similarity search — understands intent like *"gaming phone under 40k with fast charging"*.
+2. **Created `backend/database/index_vectors.py`**:
+   - Script to load all products from SQLite and push embeddings into ChromaDB in one command.
+3. **Added 2 New FastAPI Endpoints** to `backend/main.py`:
+   - `POST /api/v1/products/semantic-search`: Accepts a natural language query and returns top K semantically similar products with a similarity score.
+   - `POST /api/v1/vector/index`: On-demand endpoint to trigger vector re-indexing when new products are added.
+
+### 👤 Action Items for You (Durgesh):
+- [ ] **Index Products into ChromaDB** (run once, requires a valid Gemini API key in `.env`):
+  ```bash
+  python -m backend.database.index_vectors
+  ```
+- [ ] **Test Semantic Search** via Swagger UI at `http://localhost:8000/docs` → `POST /api/v1/products/semantic-search` → Try a natural language query like `"phone with best battery under 70k"`.
+
+---
 
 Below are high-impact feature recommendations, architectural improvements, and the step-by-step roadmap for the upcoming phases to transform BuySense AI into an industry-grade shopping decision agent.
 
@@ -114,9 +134,8 @@ Below are high-impact feature recommendations, architectural improvements, and t
 [Phase 5: Vector DB RAG Engine] ──► [Phase 6: Modern UI & Chatbot]
 ```
 
-#### 📌 Phase 5: Vector DB (ChromaDB) & RAG Integration (NEXT PHASE ⏳)
-- Create `backend/services/vector_service.py` initializing ChromaDB vector store.
-- Embed product descriptions and hardware specs for semantic intent hybrid search.
+#### 📌 Phase 5: Vector DB (ChromaDB) & RAG Integration (COMPLETED ✅)
+See Phase 5 section above for full implementation details.
 
 #### 📌 Phase 6: Streamlit Frontend Redesign & Conversational AI Chatbot UI
 - Connect Streamlit UI to FastAPI REST endpoints using `requests`.
