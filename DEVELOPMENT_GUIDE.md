@@ -138,6 +138,54 @@ Below are high-impact feature recommendations, architectural improvements, and t
 See Phase 5 section above for full implementation details.
 
 #### 📌 Phase 6: Streamlit Frontend Redesign & Conversational AI Chatbot UI
+- Connected Streamlit UI to FastAPI REST endpoints using `requests`.
+- Added interactive multi‑turn chat widget (`st.chat_message`, `st.chat_input`).
+- Implemented premium dark‑mode CSS with glassmorphism and micro‑animations.
+- Refactored layout with tab‑based sections (Search & Chat).
+
+**Action Items**
+- [ ] Run FastAPI server: `uvicorn backend.main:app --reload`
+- [ ] Run Streamlit app: `streamlit run frontend/app.py`
+- [ ] Verify chat interaction and UI styling.
+
+## 📡 Real‑time Data Retrieval (Phase 7)
+
+**Goal:** Pull live product data from e‑commerce sites instead of relying on static mock data.
+
+### Recommended Approaches (choose based on target site)
+1. **Public APIs** – If the retailer provides an official API (e.g., Amazon Product Advertising API, Flipkart API), use `requests`/`httpx` to fetch JSON data.
+2. **HTML Scraping** – For sites without APIs, use `requests` + `BeautifulSoup4` to parse product pages.
+3. **Headless Browser Automation** – For dynamic pages rendered with JavaScript, use **Selenium** or **Playwright** (Python) to load the page and extract the DOM.
+4. **Scrapy Framework** – For large‑scale crawling across many categories, Scrapy offers robust pipelines, throttling, and item storage.
+5. **Async Fetching** – Use `aiohttp` or `httpx` async clients to parallelise multiple product requests, reducing latency.
+
+### Required Packages (add to `requirements.txt`)
+```
+requests
+beautifulsoup4
+lxml
+selenium
+playwright
+scrapy
+httpx
+aiohttp
+```
+
+### Integration Steps
+- **Backend Service**: Create `backend/services/live_fetch.py` with functions like `fetch_product(url)` that select the appropriate method (API, scraper, or headless browser) based on a config.
+- **Rate‑Limiting & Politeness**: Use `time.sleep` or Scrapy's auto‑throttle; respect `robots.txt`.
+- **Caching**: Store fetched results in SQLite or Redis with a TTL (e.g., 1 hour) to avoid repeated hits.
+- **Update Vector DB**: After fetching fresh data, re‑run the embedding pipeline (`python -m backend.database.index_vectors`) to keep the ChromaDB index up‑to‑date.
+- **Frontend Hook**: Extend the search endpoint to accept a `live=true` flag; when set, the backend calls the live fetch service before returning results.
+
+### Action Items
+- [ ] Add the above packages to `requirements.txt` and run `pip install -r requirements.txt`.
+- [ ] Implement `live_fetch.py` with at least one scraper example (e.g., Amazon product page).
+- [ ] Expose a new FastAPI endpoint `/api/v1/products/live-search` that uses the live fetch service.
+- [ ] Update Streamlit UI to offer a toggle “Live Data” on the search bar.
+- [ ] Test end‑to‑end flow and document any site‑specific limitations.
+
+
 - Connect Streamlit UI to FastAPI REST endpoints using `requests`.
 - Add interactive multi-turn chat widget (`st.chat_message`, `st.chat_input`).
 - Fix quick-search popular buttons and polish CSS layout.
